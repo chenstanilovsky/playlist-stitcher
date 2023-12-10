@@ -1,0 +1,5 @@
+services:
+  playlist-stitcher:
+    build: .
+    volumes:
+      - .:/playlist-stitcher

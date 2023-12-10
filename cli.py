@@ -1,3 +1,4 @@
+import click
 import os, shutil
 import multiprocessing as mp
 from pytube import Playlist, YouTube
@@ -6,9 +7,15 @@ from moviepy.editor import VideoFileClip, concatenate_videoclips
 
 def download_video(url):
     yt = YouTube(url)
-    video = yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first()
+    video = (
+        yt.streams.filter(progressive=True, file_extension="mp4")
+        .order_by("resolution")
+        .desc()
+        .first()
+    )
     video.download()
     return video.default_filename
+
 
 def stitch_clips(video_files, playlist_title):
     video_clips = []
@@ -17,18 +24,27 @@ def stitch_clips(video_files, playlist_title):
         video_clips.append(clip)
 
     final_clip = concatenate_videoclips(video_clips, method="compose")
-    final_clip.write_videofile(f'{playlist_title}.mp4', fps=25)
+    final_clip.write_videofile(f"{playlist_title}.mp4", fps=25)
     final_clip.close()
 
-    results_path = os.path.realpath(__file__).split('main.py')[0] + "results/"
-    shutil.move(os.getcwd() + f'/{playlist_title}.mp4', results_path)
+
+@click.group()
+def cli():
+    pass
 
 
-
-
-if __name__ == '__main__':
-    playlist_url = input("Enter the playlist URL: ")
-    playlist = Playlist(playlist_url)
+@cli.command(help="Download and stitch a YouTube playlist")
+@click.argument("url")
+def stitch(url):
+    click.confirm(
+        """This will
+        \t1.Download the video files to the current directory
+        \t2.Stitch them together in a single video that will be placed in the current directory
+        \t3.Then delete the individual video files.
+        \nContinue?""",
+        abort=True,
+    )
+    playlist = Playlist(url)
     pool = mp.Pool(processes=10)  # Set the number of processes to use
     video_urls = playlist.video_urls
     video_files = pool.map(download_video, video_urls)
