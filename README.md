@@ -55,7 +55,7 @@ Replace PLAYLIST_URL with the URL of the YouTube playlist you want to download a
 - `make container`: builds and runs the docker container
 - `make run`: runs an existing built container
 - `make build`: builds the cli and installs it
-- `playlist-stitcher`: commands to run the CLI after building it with make build
+- `playlist-stitcher`: command to run the CLI after building it with make build
 
 ## License
 
