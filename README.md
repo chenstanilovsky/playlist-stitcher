@@ -33,7 +33,7 @@ After installation, you can use the tool directly from your shell:
 playlist-stitcher stitch "PLAYLIST_URL"
 ```
 
-Replace "PLAYLIST_URL" with the URL of the YouTube playlist you want to download and stitch.
+Replace PLAYLIST_URL with the URL of the YouTube playlist you want to download and stitch.
 
 ## How does it work
 
