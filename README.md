@@ -1,6 +1,6 @@
 # YouTube Playlist Downloader & Stitcher
 
-<img src="https://github.com/chesta-tools/playlist-stitcher/blob/main/youtools.jpeg" alt="youtools" style="width:25vw; min-width: 200px; max-width: 400px; display: block; margin-left: auto; margin-right: auto;"/>
+<img src="https://github.com/chesta-tools/playlist-stitcher/raw/main/youtools.jpeg" alt="youtools" style="width:25vw; min-width: 200px; max-width: 400px; display: block; margin-left: auto; margin-right: auto;"/>
 </br></br>
 
 ### A command-line tool that allows you to download all videos in a YouTube playlist and stitch them together into a single video.
