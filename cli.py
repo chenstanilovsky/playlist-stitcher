@@ -1,26 +1,41 @@
 import click
+import random
 import os, shutil
 import multiprocessing as mp
 from pytube import Playlist, YouTube
-from moviepy.editor import VideoFileClip, concatenate_videoclips
+from moviepy.editor import AudioFileClip, VideoFileClip, concatenate_videoclips
 
 
 def download_video(url):
     yt = YouTube(url)
-    video = (
-        yt.streams.filter(progressive=True, file_extension="mp4")
-        .order_by("resolution")
-        .desc()
-        .first()
+    video_file = (
+        yt.streams.filter(progressive=True, file_extension="mp4").first().download()
     )
-    video.download()
-    return video.default_filename
+    video = VideoFileClip(video_file)
+    audio_file = yt.streams.filter(only_audio=True).last().download()
+    audio = AudioFileClip(audio_file)
+
+    dir, file_name = os.path.split(video_file)
+    final_file = f"{dir}/final_{file_name}"
+    final_clip = video.set_audio(audio)
+    final_clip.write_videofile(final_file, fps=60)
+
+    audio.close()
+    video.close()
+    final_clip.close()
+
+    os.remove(video_file)
+    os.remove(audio_file)
+
+    return final_file
 
 
 def stitch_clips(video_files, playlist_title):
     video_clips = []
     for video_file in video_files:
         clip = VideoFileClip(video_file)
+        audio = AudioFileClip(video_file)
+        clip = clip.set_audio(audio)
         video_clips.append(clip)
 
     final_clip = concatenate_videoclips(video_clips, method="compose")
@@ -45,7 +60,7 @@ def stitch(url):
         abort=True,
     )
     playlist = Playlist(url)
-    pool = mp.Pool(processes=10)  # Set the number of processes to use
+    pool = mp.Pool(processes=mp.cpu_count())  # Set the number of processes to use
     video_urls = playlist.video_urls
     video_files = pool.map(download_video, video_urls)
     stitch_clips(video_files, playlist.title)

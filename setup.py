@@ -7,7 +7,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="playlist-stitcher",
-    version="0.0.5",
+    version="0.0.6",
     author="Chen Stanilovsky",
     author_email="chen.stanilovsky@gmail.com",
     license="GNU GPLv3",
