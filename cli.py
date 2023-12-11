@@ -39,7 +39,8 @@ def stitch_clips(video_files, playlist_title):
         video_clips.append(clip)
 
     final_clip = concatenate_videoclips(video_clips, method="compose")
-    final_clip.write_videofile(f"{playlist_title}.mp4", fps=25)
+    final_clip.write_videofile(f"{playlist_title}.mp4", fps=60, audio_codec="aac")
+
     final_clip.close()
 
 
@@ -60,9 +61,8 @@ def stitch(url):
         abort=True,
     )
     playlist = Playlist(url)
-    pool = mp.Pool(processes=mp.cpu_count())  # Set the number of processes to use
     video_urls = playlist.video_urls
-    video_files = pool.map(download_video, video_urls)
+    video_files = [download_video(url) for url in video_urls]
     stitch_clips(video_files, playlist.title)
     for file in video_files:
         # construct the full path of the file
